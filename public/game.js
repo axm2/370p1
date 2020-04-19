@@ -1,3 +1,14 @@
+window.post = function(url, data) {
+  return fetch(url, {method: "POST", 
+	             body: JSON.stringify(data),
+                     headers: { 'Content-Type': 'application/json'
+			      }
+                    });
+}
+
+var t = post("/score", {username: "osmium", score: 555});
+console.log(t);
+
 var Breakout = new Phaser.Class({
 
     Extends: Phaser.Scene,
@@ -150,7 +161,7 @@ var config = {
     type: Phaser.WEBGL,
     width: 800,
     height: 600,
-    parent: 'phaser-example',
+    parent: 'game-window',
     scene: [ Breakout ],
     physics: {
         default: 'arcade'

@@ -5,10 +5,10 @@ var bodyParser = require('body-parser');
 var path = require('path');
 
 var connection = mysql.createConnection({
-	host     : '*',
-	user     : '*',
+	host     : 'localhost',
+	user     : 'root',
 	password : '*',
-	database : '*'
+	database : 'nodelogin'
 });
 
 var app = express();
@@ -19,7 +19,9 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
-
+app.use(express.json());
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname + '/login.html'));
 });
@@ -38,7 +40,7 @@ app.post('/auth', function(request, response) {
 			} else {
 				response.send('Incorrect Username and/or Password!');
 			}			
-			response.end();
+			//response.end();
 		});
 	} else {
 		response.send('Please enter Username and Password!');
@@ -67,15 +69,21 @@ app.post('/register',function(request,response){
 });
 app.get('/home', function(request, response) {
 	if (request.session.loggedin) {
-		response.send('Welcome back, ' + request.session.username + '!');
+		//response.send('Welcome back, ' + request.session.username + '!');
 		connection.query('SELECT gameID, score FROM games WHERE accountID in (SELECT id from accounts where username = ?)', [request.session.username], function(error,results,fields){
 			if(error) throw error;
-			else console.log(results);
+			else{
+				response.render('home', {data: []});
+			}
 		});
 	} else {
 		response.send('Please login to view this page!');
 	}
-	response.end();
+	//response.end();
+});
+app.post('/score',function(request,response){
+	console.log(request.body);
 });
 
 app.listen(3000);
+
