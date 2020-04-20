@@ -73,7 +73,8 @@ app.get('/home', function(request, response) {
 		connection.query('SELECT gameID, score FROM games WHERE accountID in (SELECT id from accounts where username = ?)', [request.session.username], function(error,results,fields){
 			if(error) throw error;
 			else{
-				response.render('home', {data: []});
+				console.log(results);
+				response.render('home', {data: [request.session.username, results]});
 			}
 		});
 	} else {
@@ -82,6 +83,7 @@ app.get('/home', function(request, response) {
 	//response.end();
 });
 app.post('/score',function(request,response){
+	// we need to insert into games here...
 	console.log(request.body);
 });
 
