@@ -1,25 +1,133 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title>Bricky Blocky Breaky</title>
-    <style>* { padding: 0; margin: 0; }</style>
+    <style>
+        * {
+            font-family: Helvetica, Arial, sans-serif;
+            padding: 0;
+            margin: 5px;
+            color: white;
+        }
+
+        body {
+            background-color: rgb(21, 21, 21);
+        }
+
+        .container {
+            display: flex;
+        }
+
+        #logout {
+            text-align: right;
+
+            font-size: medium;
+            padding: 5px;
+        }
+
+        #stats,
+        #topscores,
+        #past-games {
+            flex: 1;
+            text-align: center;
+        }
+
+        table {
+            margin: auto;
+            border: 1px solid white;
+            border-radius: 1px;
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 0;
+            height: 2.5rem;
+            /* Footer height */
+        }
+    </style>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.22.0/dist/phaser.min.js"></script>
 </head>
+
 <body>
     <script src='game.js'></script>
-    <div id = "poop">
-     	 <div id = "left">
-        	 <div id = "game-window"></div>
-             <div id = "stats">
-                 <h1><%=data[0] %></h1>
-                 <p><%=data[1][1].gameID %></p>
-             </div>
-         </div>
-         <div id = "right">
-        	 <div id = "past-games">
-		</div>
-         </div>
-     </div> 
+
+    <div id="logout">
+        <a href="/logout">logout</a>
+    </div>
+    <div class="container">
+        <div>
+            <div id="game-window"></div>
+            <div id="instructions">
+                <h2>Instructions:</h2>
+                <p>Use the mouse to control the paddle</p>
+                <p>Click to serve the ball</p>
+                <h3>Scoring:</h3>
+                <p>Each block is worth one point</p>
+                <p>The longer you survive, the higher the score!</p>
+                <h4>Hint:</h4>
+                <p>The farther from the center of the paddle the ball hits, the harder the ball bounces</p>
+            </div>
+        </div>
+
+
+
+        <div id="topscores">
+            <h2>Top 10 scores:</h2>
+            <table align="center">
+                <tr>
+                    <th>Place</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+                <% if (data[2].length > 0){ %>
+                <% counter=0 %>
+                <% data[2].forEach(function(value) { %>
+                <tr>
+                    <td><%=++counter %></td>
+                    <td><%=value.username %></td>
+                    <td><%=value.score %></td>
+                </tr>
+                <% }) %>
+                <% } %>
+            </table>
+
+        </div>
+        <div id="stats">
+            <p><%=data[0] %>'s highest score:<%=playerhighscore%></p>
+            <p><%=data[0] %>'s games played:<%=gamesplayed%></p>
+            <% if (gamesplayed>0){avgscore=scoresum/gamesplayed} %>
+            <p><%=data[0] %>'s average score:<%=Math.round(avgscore)%></p>
+        </div>
+        <div id="past-games" style="height:800px;overflow:auto">
+            <h2><span id="username"><%=data[0] %></span>'s past games:</h2>
+            <table align="center">
+                <tr>
+                    <th>Game ID</th>
+                    <th>Score</th>
+                </tr>
+                <% gamesplayed = 0 %>
+                <% playerhighscore = 0 %>
+                <% scoresum = 0 %>
+                <% avgscore=0 %>
+                <% if (data[1].length > 0){ %>
+                <% data[1].forEach(function(value) { %>
+                <% gamesplayed++; %>
+                <% scoresum+=value.score %>
+                <% if (value.score>playerhighscore){playerhighscore=value.score;} %>
+                <tr>
+                    <td><%=value.gameID %></td>
+                    <td><%=value.score %></td>
+                </tr>
+                <% }) %>
+                <% } %>
+            </table>
+        </div>
+    </div>
+    <footer id="footer">
+        Omar Mirza 2020
+    </footer>
 </body>
+
 </html>

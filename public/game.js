@@ -38,8 +38,8 @@ var Breakout = new Phaser.Class({
         this.score = 0
         this.lives = 3
         this.level = 1
-        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: 'Tahoma, Geneva , sans-serif', fontSize: '32px', fill: '#fff' });
-        this.livesText = this.add.text(16, 48, 'Lives: 3', { fontFamily: 'Tahoma, Geneva , sans-serif', fontSize: '32px', fill: '#fff' });
+        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: 'Helvetica, Arial, Tahoma, Geneva , sans-serif', fontSize: '24px', fill: '#fff' });
+        this.livesText = this.add.text(16, 48, 'Lives: 3', { fontFamily: 'Helvetica, Arial, Tahoma, Geneva , sans-serif', fontSize: '24px', fill: '#fff' });
         //  Enable world bounds, but disable the floor
         this.physics.world.setBoundsCollision(true, true, true, false);
 
@@ -84,7 +84,7 @@ var Breakout = new Phaser.Class({
         this.input.on('pointerup', function (pointer) {
 
             if (this.ball.getData('onPaddle')) {
-                this.ball.setVelocity(-75, -300);
+                this.ball.setVelocity(-75, -450);
                 this.ball.setData('onPaddle', false);
             }
 
@@ -95,7 +95,13 @@ var Breakout = new Phaser.Class({
         this.score += 1;
         this.scoreText.setText('Score: ' + this.score);
 
-        brick.disableBody(true, true);
+        if (this.level >= 4 && (brick.frame.name == "purple1" || brick.frame.name=="silver1")){
+            brick.setFrame(brick.frame.name.substring(0,brick.frame.name.length-1) + "2");
+        }
+
+        else{
+            brick.disableBody(true, true);
+        }
         // if its past level 5, and brick is color1 set the brick.frame.name to color2 instead of color1 and don't break
 
         if (this.bricks.countActive() === 0) {
@@ -115,6 +121,9 @@ var Breakout = new Phaser.Class({
         if (this.level == 1) {
             this.bricks.children.each(function (brick) {
 
+                if (brick.frame.name=="silver2" || brick.frame.name=="purple2"){
+                    brick.setFrame(brick.frame.name.substring(0,brick.frame.name.length-1) + "1");
+                }
                 brick.enableBody(false, 0, 0, true, true)
 
             });
@@ -129,6 +138,9 @@ var Breakout = new Phaser.Class({
         else if (this.level == 2) {
             this.bricks.children.each(function (brick) {
 
+                if (brick.frame.name=="silver2" || brick.frame.name=="purple2"){
+                    brick.setFrame(brick.frame.name.substring(0,brick.frame.name.length-1) + "1");
+                }
                 brick.enableBody(false, 0, 0, true, true)
 
             });
@@ -141,7 +153,10 @@ var Breakout = new Phaser.Class({
         }
         else if (this.level >= 3) {
             this.bricks.children.each(function (brick) {
-
+                
+                if (brick.frame.name=="silver2" || brick.frame.name=="purple2"){
+                    brick.setFrame(brick.frame.name.substring(0,brick.frame.name.length-1) + "1");
+                }
                 brick.enableBody(false, 0, 0, true, true)
 
             });
@@ -161,12 +176,12 @@ var Breakout = new Phaser.Class({
         if (ball.x < paddle.x) {
             //  Ball is on the left-hand side of the paddle
             diff = paddle.x - ball.x;
-            ball.setVelocityX(-10 * diff);
+            ball.setVelocityX(-20 * diff);
         }
         else if (ball.x > paddle.x) {
             //  Ball is on the right-hand side of the paddle
             diff = ball.x - paddle.x;
-            ball.setVelocityX(10 * diff);
+            ball.setVelocityX(20 * diff);
         }
         else {
             //  Ball is perfectly in the middle
@@ -180,7 +195,7 @@ var Breakout = new Phaser.Class({
             this.lives -= 1;
             this.livesText.setText('Lives: ' + this.lives);
             if (this.lives === 0) { // when we die
-                post("/score", { username: stats.innerText, score: this.score });
+                post("/score", { username: document.getElementById('username').innerText, score: this.score });
                 this.lives = 3;
                 this.livesText.setText('Lives: ' + this.lives);
                 this.score = 0;
