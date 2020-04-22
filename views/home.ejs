@@ -68,6 +68,8 @@
                 <p>The longer you survive, the higher the score!</p>
                 <h4>Hint:</h4>
                 <p>The farther from the center of the paddle the ball hits, the harder the ball bounces</p>
+                <br>
+                <p>Refresh page to refresh stats on the right</p>
             </div>
         </div>
 
@@ -95,6 +97,16 @@
 
         </div>
         <div id="stats">
+            <% gamesplayed = 0 %>
+            <% playerhighscore = 0 %>
+            <% scoresum = 0 %>
+            <% avgscore=0 %>
+            <% if (data[1].length > 0){ %>
+            <% data[1].forEach(function(value) { %>
+            <% gamesplayed++; %>
+            <% scoresum+=value.score %>
+            <% if (value.score>playerhighscore){playerhighscore=value.score;} %>
+            <%})}%>
             <p><%=data[0] %>'s highest score:<%=playerhighscore%></p>
             <p><%=data[0] %>'s games played:<%=gamesplayed%></p>
             <% if (gamesplayed>0){avgscore=scoresum/gamesplayed} %>
@@ -107,15 +119,8 @@
                     <th>Game ID</th>
                     <th>Score</th>
                 </tr>
-                <% gamesplayed = 0 %>
-                <% playerhighscore = 0 %>
-                <% scoresum = 0 %>
-                <% avgscore=0 %>
                 <% if (data[1].length > 0){ %>
                 <% data[1].forEach(function(value) { %>
-                <% gamesplayed++; %>
-                <% scoresum+=value.score %>
-                <% if (value.score>playerhighscore){playerhighscore=value.score;} %>
                 <tr>
                     <td><%=value.gameID %></td>
                     <td><%=value.score %></td>
